@@ -17,8 +17,13 @@ namespace csharp_gestore_eventi
         // Costruttore
         public Evento(string titolo, DateTime data, int capienzaMassima)
         {
-            _titolo = titolo;
-            _data = data;
+            Titolo = titolo;
+            Data = data;
+
+            if (capienzaMassima <= 0)
+            {
+                throw new ArgumentException("Il numero di posti totali deve essere valido");
+            }
             _capienzaMassima = capienzaMassima;
             _postiPrenotati = 0;
         }
@@ -27,14 +32,28 @@ namespace csharp_gestore_eventi
         public string Titolo
         {
             get { return _titolo; }
-            set { _titolo = value; }
+            set
+            {
+                if (string.IsNullOrEmpty(value))
+                {
+                    throw new ArgumentException("Il titolo non può essere vuoto.");
+                }
+                _titolo = value;
+            }
         }
 
         // Metodi Getter e Setter per data
         public DateTime Data
         {
             get { return _data; }
-            set { _data = value; }
+            set
+            {
+                if (value < DateTime.Now)
+                {
+                    throw new ArgumentException("Inserisci una data valida");
+                }
+                _data = value;
+            }
         }
 
         // Metodo Getter per capienza massima
