@@ -17,6 +17,10 @@ namespace csharp_gestore_eventi
             {
                 try
                 {
+                    // Chiedo all'utente se vuole aggiungere un evento normale o una conferenza
+                    Console.Write($"Di che tipo e' il {i + 1}° evento (evento/conferenza): ");
+                    string tipoEvento = Console.ReadLine().ToLower();
+
                     Console.Write($"Inserisci il nome del {i + 1}° evento: ");
                     string titolo = Console.ReadLine();
 
@@ -26,20 +30,41 @@ namespace csharp_gestore_eventi
                     Console.Write($"Inserisci il numero di posti totali: ");
                     int capienzaMassima = int.Parse(Console.ReadLine());
 
-                    Evento evento = new Evento(titolo, data, capienzaMassima);
-                    programmaEventi.AggiungiEvento(evento);
+                    // Aggiungo un evento normale o una conferenza in base alla scelta dell'utente
+                    if (tipoEvento == "evento")
+                    {
+                        Evento evento = new Evento(titolo, data, capienzaMassima);
+                        programmaEventi.AggiungiEvento(evento);
+                    }
+                    else if (tipoEvento == "conferenza")
+                    {
+                        Console.Write("Inserisci il nome del relatore: ");
+                        string relatore = Console.ReadLine();
+
+                        Console.Write("Inserisci il prezzo della conferenza: ");
+                        double prezzo = double.Parse(Console.ReadLine());
+
+                        Conferenza conferenza = new Conferenza(titolo, data, capienzaMassima, relatore, prezzo);
+                        programmaEventi.AggiungiEvento(conferenza);
+                    }
+                    else
+                    {
+                        Console.WriteLine("Tipo evento non valido, inserisci 'evento' o 'conferenza'.");
+                        i--;
+                        continue;
+                    }
                     Console.Write("\n");
                 }
                 catch (ArgumentException ex)
                 {
                     Console.WriteLine($"Errore: {ex.Message}");
-                    i--; 
-                    continue; 
+                    i--;
+                    continue;
                 }
                 catch (FormatException)
                 {
                     Console.WriteLine("Errore: Formato non valido.");
-                    i--; 
+                    i--;
                     continue;
                 }
 
