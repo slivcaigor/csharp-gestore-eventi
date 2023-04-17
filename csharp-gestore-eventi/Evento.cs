@@ -17,6 +17,7 @@ namespace csharp_gestore_eventi
         // Costruttore
         public Evento(string titolo, DateTime data, int capienzaMassima)
         {
+            _titolo = titolo;
             Titolo = titolo;
             Data = data;
 
@@ -66,6 +67,44 @@ namespace csharp_gestore_eventi
         public int PostiPrenotati
         {
             get { return _postiPrenotati; }
+        }
+
+        // Metodo per prenotare posti
+        public void PrenotaPosti(int numeroPosti)
+        {
+            if (_data < DateTime.Now)
+            {
+                throw new InvalidOperationException("L'evento si è già concluso.");
+            }
+
+            if (numeroPosti <= 0 || _postiPrenotati + numeroPosti > _capienzaMassima)
+            {
+                throw new InvalidOperationException("Non ci sono abbastanza posti disponibili.");
+            }
+
+            _postiPrenotati += numeroPosti;
+        }
+
+        // Metodo per disdire posti
+        public void DisdiciPosti(int numeroPosti)
+        {
+            if (_data < DateTime.Now)
+            {
+                throw new InvalidOperationException("L'evento si è già concluso.");
+            }
+
+            if (numeroPosti <= 0 || _postiPrenotati - numeroPosti < 0)
+            {
+                throw new InvalidOperationException("Non ci sono abbastanza posti prenotati da disdire.");
+            }
+
+            _postiPrenotati -= numeroPosti;
+        }
+
+        // Override del metodo ToString
+        public override string ToString()
+        {
+            return _data.ToString("dd/MM/yyyy") + " - " + _titolo;
         }
     }
 }
