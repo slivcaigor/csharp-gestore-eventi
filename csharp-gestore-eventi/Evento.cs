@@ -17,7 +17,6 @@ namespace csharp_gestore_eventi
         // Costruttore
         public Evento(string titolo, DateTime data, int capienzaMassima)
         {
-            _titolo = titolo;
             Titolo = titolo;
             Data = data;
 
