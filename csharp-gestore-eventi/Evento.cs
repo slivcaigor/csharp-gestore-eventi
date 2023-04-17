@@ -17,12 +17,21 @@ namespace csharp_gestore_eventi
         // Costruttore
         public Evento(string titolo, DateTime data, int capienzaMassima)
         {
-            Titolo = titolo;
-            Data = data;
+            if (string.IsNullOrEmpty(titolo))
+            {
+                throw new ArgumentException("Il titolo non può essere vuoto.");
+            }
+            _titolo = titolo;
+
+            if (data < DateTime.Now)
+            {
+                throw new ArgumentException("La data dell'evento non può essere già passata.");
+            }
+            _data = data;
 
             if (capienzaMassima <= 0)
             {
-                throw new ArgumentException("Il numero di posti totali deve essere valido");
+                throw new ArgumentException("La capienza massima di posti deve essere un numero positivo.");
             }
             _capienzaMassima = capienzaMassima;
             _postiPrenotati = 0;
@@ -42,6 +51,7 @@ namespace csharp_gestore_eventi
             }
         }
 
+
         // Metodi Getter e Setter per data
         public DateTime Data
         {
@@ -50,7 +60,7 @@ namespace csharp_gestore_eventi
             {
                 if (value < DateTime.Now)
                 {
-                    throw new ArgumentException("Inserisci una data valida");
+                    throw new ArgumentException("La data dell'evento non può essere già passata.");
                 }
                 _data = value;
             }
@@ -73,12 +83,12 @@ namespace csharp_gestore_eventi
         {
             if (_data < DateTime.Now)
             {
-                throw new InvalidOperationException("L'evento si è già concluso.");
+                throw new ArgumentException("L'evento si è già concluso.");
             }
 
             if (numeroPosti <= 0 || _postiPrenotati + numeroPosti > _capienzaMassima)
             {
-                throw new InvalidOperationException("Non ci sono abbastanza posti disponibili.");
+                throw new ArgumentException("Non ci sono abbastanza posti disponibili.");
             }
 
             _postiPrenotati += numeroPosti;
@@ -89,12 +99,12 @@ namespace csharp_gestore_eventi
         {
             if (_data < DateTime.Now)
             {
-                throw new InvalidOperationException("L'evento si è già concluso.");
+                throw new ArgumentException("L'evento si è già concluso.");
             }
 
             if (numeroPosti <= 0 || _postiPrenotati - numeroPosti < 0)
             {
-                throw new InvalidOperationException("Non ci sono abbastanza posti prenotati da disdire.");
+                throw new ArgumentException("Non ci sono abbastanza posti prenotati da disdire.");
             }
 
             _postiPrenotati -= numeroPosti;
@@ -103,7 +113,7 @@ namespace csharp_gestore_eventi
         // Override del metodo ToString
         public override string ToString()
         {
-            return _data.ToString("dd/MM/yyyy") + " - " + _titolo;
+            return $"{Data:dd/MM/yyyy} - {Titolo} (Posti prenotati: {PostiPrenotati}, Posti disponibili: {CapienzaMassima - PostiPrenotati}/{CapienzaMassima})";
         }
     }
 }
